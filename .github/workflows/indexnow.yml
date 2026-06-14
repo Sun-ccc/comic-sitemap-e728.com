@@ -1,0 +1,31 @@
+name: IndexNow 自动推送
+on:
+  push:
+    paths:
+      - increment_urls.json
+  workflow_dispatch:
+
+jobs:
+  push_task:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 拉取文件
+        uses: actions/checkout@v4
+
+      - name: 推送给必应
+        run: |
+          URL_CONTENT=$(cat increment_urls.json)
+          HOST="www.e728.com"
+          KEY="${{ secrets.INDEXNOW_KEY }}"
+
+          RESULT=$(curl -s -w "\n%{http_code}" -X POST \
+            "https://api.indexnow.org/indexnow" \
+            -H "Content-Type: application/json" \
+            -d "{
+              \"host\": \"$HOST\",
+              \"key\": \"$KEY\",
+              \"keyLocation\": \"https://www.e728.com/public/verify/my-verify-2026.txt\",
+              \"urlList\": $URL_CONTENT
+            }")
+
+          echo "$RESULT"
