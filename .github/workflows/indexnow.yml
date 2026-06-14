@@ -1,6 +1,9 @@
 name: IndexNow 自动推送
+
 on:
   push:
+    branches:
+      - master
     paths:
       - increment_urls.json
   workflow_dispatch:
@@ -18,6 +21,11 @@ jobs:
           HOST="www.e728.com"
           KEY="${{ secrets.INDEXNOW_KEY }}"
 
+          echo "=== 推送参数检查 ==="
+          echo "Host: $HOST"
+          echo "URL 数量: $(echo $URL_CONTENT | jq length)"
+          echo "===================="
+
           RESULT=$(curl -s -w "\n%{http_code}" -X POST \
             "https://api.indexnow.org/indexnow" \
             -H "Content-Type: application/json" \
@@ -28,4 +36,5 @@ jobs:
               \"urlList\": $URL_CONTENT
             }")
 
+          echo "=== 推送结果 ==="
           echo "$RESULT"
