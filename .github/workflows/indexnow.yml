@@ -18,8 +18,10 @@ jobs:
       - name: 推送给必应
         run: |
           URL_CONTENT=$(cat increment_urls.json)
+          # 仅填写纯域名，不要带 https://
           HOST="www.e728.com"
-          KEY="${{ secrets.INDEXNOW_KEY }}"
+          # 填写你的 IndexNow 密钥
+          KEY="e40b2ca8323040d19ad6f2023e5e1d70"
 
           echo "=== 推送参数检查 ==="
           echo "Host: $HOST"
@@ -32,7 +34,6 @@ jobs:
             -d "{
               \"host\": \"$HOST\",
               \"key\": \"$KEY\",
-              \"keyLocation\": \"https://www.e728.com/public/verify/my-verify-2026.txt\",
               \"urlList\": $URL_CONTENT
             }")
 
